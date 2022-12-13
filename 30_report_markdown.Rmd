@@ -1,0 +1,230 @@
+---
+title: "Rail Franchise Scheduling"
+
+output: 
+  flexdashboard::flex_dashboard:
+  orientation: columns
+theme: flatly
+self_contained: no
+storyboard: false
+defaultFigWidth: 576
+defaultFigHeight: 460
+defaultFigWidthMobile: 360
+defaultFigHeightMobile: 460
+---
+  
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(crosstalk)
+library(shiny)
+library(DT)
+library(plotly)
+library(grid)
+library(knitr)
+library(png)
+source("20_prep_markdown.R")
+
+```
+
+
+
+About{data-orientation=rows}
+===================================== 
+  
+#### Rail Franchise Scheduling Service
+
+This rail scheduling dashboard displays the current schedule and related analysis. Select the tab across the top for what you need.  
+
+***
+  
+#### RFS Table
+This table shows the planned scheduling of rail franchises for the next 40 years. 
+
+Features:
+
+* View all dates of the current schedule in table format
+* Use filters to view a certain scenario - for example, how many DA have there been since 2017, or when is a particular franchise due to finish
+* Top right search bar - search value across the entire table.
+* Click column heading - sort the table by selected column name.
+* Column search - filter the table by column value entered.
+* Excel button - export displayed table to .csv file.
+* Copy button - copy displayed table to the clipboard.
+
+
+Key:  
+
+* Black - user inputted or computer generated
+* **Bold black** - historical and user inputted
+* <span style="color:orange"> Orange</span> - Warning: Date falls within a date declared forbidden in the input_schedule.xlsx
+
+
+***
+
+#### Milestones
+This tab displays a waterfall milestone chart showing key milestone dates for each rail franchises over the next 40 years. Competitions and DA contracts are both represented, with DA milestones in shades of pink/red.  
+This tab also contains key metrics on where the areas of ITT congestion are in the schedule.
+
+
+Fully interactive chart:
+
+* Zoom into franchises or timescale of interest by clicking a dragging a box.  Use the 'reset' axis button to return to the original view.
+* Filter types of milestone that you are interested in by clicking on the items key that you would like to hide.
+* Choose between a 4 month, 1 year or 10 year view of the schedule.
+* Hover over milestones to pop up a window with more information on each one.
+* Save displayed chart to .png format.
+
+***
+  
+#### Project phases
+This tab includes additional analysis and charts on the project phases in the baseline schedule. 
+
+* The minimum baseline contract length given the number of franchises to be equally separated by *x* rail periods.
+* The average length of each project phase for competitions, planned DAs and emergency DA contracts (based on the baseline schedule).
+* Bar charts for each project phase showing how many are due by year.
+
+***
+   
+#### Finance and Resources
+This tab displays interactive line graphs showing adviser spend and FTE staff resource profiles of the planned schedule over 40 years(NB: spend figures are outturn).
+
+* Compare baseline schedule graphs to user changed schedules. Baseline charts are in blue, and the alternative schedule it is being compared to is in orange. To change the 'alternative schedule' you can change the dates directly in the file in this folder "data/test_output_table_changed.csv".
+* Monthly and annual charts are available.
+* Charts are fully clickable, zoom-able and can be exported out of the app.
+* You can turn off the baseline or alternative schedules to view only one. Do this by clicking on the key.
+
+***
+  
+####  User changed: Milestones
+This is a duplicate of the Milestone tab, but displays an interactive milestone chart of the 'altered' schedule instead of the baseline schedule. These changes may include:
+
+* An issued DA.
+* An extended contract.
+* A changed baseline contract length.
+* Altered milestone phase periods.
+
+*** 
+
+  
+  
+
+RFS Table{data-orientation=rows}
+===================================== 
+ 
+```{css}
+.chart-wrapper {
+  overflow-x: scroll;
+}
+```
+ 
+
+```{r rfs_table, echo=FALSE, message=FALSE, warning=FALSE}
+rfs_int
+
+```
+
+Milestones{data-orientation=rows}
+=====================================
+| Key Metrics        |  Values  |
+|:---------------|------:|
+| Number of DAs issued  |   **`r nrow(da_table)/(length(unique(da_table$variable)) / 2) `**|
+| Most congested ITT period  |   **`r milestone_congestion`**|
+| Years with more than two ITT milestones  |   **`r first_year_more_2ITT`**|
+| Number of years with more than two ITT milestones  |   **`r more_than_2IIT`**|
+| If you have any issues or concerns with the schedule please save the milestone chart and contact [Jonathan Marsh](mailto:jonathan.marsh@dft.gov.uk").|
+  
+```{r milestone_chart, echo=FALSE, message=FALSE, warning=FALSE}
+milestone_fig
+```
+
+
+Project Phases{data-orientation=rows}
+=====================================  
+
+Column {data-width=400}
+-------------------------------------
+
+```{r contract_length, echo=FALSE}
+
+num_frans <- filter(assumption_table, ref == "O11")$value
+spacing_rp<- filter(assumption_table, ref == "O1")$value
+num_frans_alt <-  filter(alt_assumptions_table, ref == "O11")$value
+spacing_rp_alt<- filter(alt_assumptions_table, ref == "O1")$value
+```
+### Ideal contract length
+Assumptions   If there are `r num_frans` contracts which need to be spaced by `r spacing_rp` rail periods, then the contract length should be minimum `r round((spacing_rp/13)*num_frans, 1)` years.  
+Alternative   assumptions: If there are `r num_frans_alt` contracts which need to be spaced by `r spacing_rp_alt` rail periods, then the contract length should be minimum `r round((spacing_rp_alt/13)*num_frans_alt, 1)` years.
+
+
+### How long is each phase on average?
+```{r phase_length, echo=FALSE}
+phase_table
+```
+
+
+Column {.tabset}
+-------------------------------------
+### ITT Profile
+```{r}
+ITT_fig
+```
+
+### PQQ Profile
+```{r}
+PQQ_fig
+```
+
+### RfP Profile
+```{r}
+RfP_fig
+```
+
+### PIN Profile
+```{r}
+PIN_fig
+```
+
+
+Finance and Resources{data-orientation=rows}
+============================================ 
+Column {.tabset}  
+-------------------------------------
+### Monthly
+```{r}
+spending_fig
+```
+
+
+### Annual
+```{r}
+fin_year_fig
+```
+
+
+
+Column {.tabset}
+-------------------------------------
+### Monthly
+```{r}
+resource_fig
+```   
+
+### Annual
+```{r}
+res_year_fig
+
+
+DA_count_change<- nrow(rfs_changed %>% filter(str_detect(`Type`,"DA")))
+```
+
+User changed:Milestones{data-orientation=rows}
+=====================================
+| Key Metrics        |  Values  |
+|:---------------|------:|
+| Number of DA's  | **`r DA_count_change`**|
+| Most congested ITT period  |   **`r milestone_congestion_changed`**|
+| Years with more than two ITT milestones  |   **`r first_year_more_2ITT_mod`**|
+| Number of years with more than two ITT milestones  |   **`r more_than_2IIT_mod`**|
+
+```{r milestone_chart_changed, echo=FALSE, message=FALSE, warning=FALSE}
+milestone_fig_changed
+```
