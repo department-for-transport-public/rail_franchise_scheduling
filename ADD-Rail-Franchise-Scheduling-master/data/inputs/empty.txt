@@ -1,3 +1,0 @@
-Directory contains:	
-- input schedule	
-- user changes	

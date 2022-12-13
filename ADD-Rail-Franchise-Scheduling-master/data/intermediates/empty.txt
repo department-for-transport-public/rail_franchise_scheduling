@@ -1,2 +1,0 @@
-Directory contains:
-- intermediate data tables
