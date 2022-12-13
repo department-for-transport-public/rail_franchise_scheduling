@@ -108,7 +108,7 @@ After running the code the dashboard html can be found in the main folder:
 ## Structure
 
 ### <a id="input_datasheet"></a>User input datasheet
-This excel [template](https://departmentfortransportuk.sharepoint.com/:x:/s/ASD/EcPpuygNt55HlilUmP8bG0wBjhx6b-Q7HOTBmHjRwQhlxQ?e=NdRwgH) consists of 4 tabs:
+This excel template consists of 4 tabs:
 
 1. **Input sheet** - incomplete RFS table that **must** include the first start date for each rail franchise.
 2. **Changes** - In this version, you can test an alternate schedule by editing a version of the baseline schedule in a seperate .csv sheet. This will be updated to a simpler to use feature in the changes tab in this document in a future version.
