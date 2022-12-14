@@ -5,6 +5,10 @@
       {
         "Name": "CRAN",
         "URL": "https://mran.microsoft.com/snapshot/2021-07-20"
+      },
+      {
+        "Name": "RSPM",
+        "URL": "https://gcp-rs-pack-man/DfT-Full-Cran/latest"
       }
     ]
   },
@@ -657,7 +661,7 @@
       "Package": "renv",
       "Version": "0.14.0",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Hash": "30e5eba91b67f7f4d75d31de14bbfbdc"
     },
     "reprex": {
