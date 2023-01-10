@@ -69,7 +69,7 @@ Folders 📁 and files 📄.
 4. Follow instructions 7/8 from above to run the new dashboard.
 
 ### How to use the schedule_input sheet
-This is where you put in all the past data, future data and parameters you want the dashboard to consider. Once you have updated this sheet in sharepoint please contact the analytics unit to rerun the dashboard and send you the new output.
+This is where you put in all the past data, future data and parameters you want the dashboard to consider. Once you have updated this sheet, save the new version in the data/inputs folder and you can rerun the dashboard.
 
 * **Input sheet**
 This sheet contains all historical and known future milestones. The dashboard will fill in the blanks going forwards so the only information you have to input here is:  
